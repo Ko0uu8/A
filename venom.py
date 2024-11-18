@@ -11,7 +11,7 @@ import string
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 # Insert your Telegram bot token here
-bot = telebot.TeleBot('7647121048:AAHz4T6rn1L2dIKDjBkpgiogUhnhLji0afc')
+bot = telebot.TeleBot('7815568840:AAFRmC714-Kcy8AtE91Aka40cX3L2EUkXEw')
 # Owner and admin user IDs
 owner_id = "5730843286"
 admin_ids = ["5730843286"]
@@ -110,7 +110,7 @@ def get_current_time():
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     response = (
-        f"🌟 Welcome to the VENOM DDOS Bot! 🌟\n\n"
+        f"🌟 Welcome to the WAKE DDOS Bot! 🌟\n\n"
         f"Current Time: {get_current_time()}\n\n"
         "Here are some commands you can use:\n"
         "👤 /approveuser <id> <duration> - Approve a user for a certain duration (day, week, month)\n"
@@ -328,7 +328,7 @@ def handle_attack(message):
     else:
         response = ("🚫 Unauthorized Access! 🚫\n\nOops! It seems like you don't have permission to use the /attack command. "
                     "To gain access and unleash the power of attacks, you can:\n\n👉 Contact an Admin or the Owner for approval.\n"
-                    "🌟THE ONLY OWNER IS @venompapa1010 DM TO BUY ACCESS")
+                    "🌟THE ONLY OWNER IS @Broken_heart_41 DM TO BUY ACCESS")
 
     bot.reply_to(message, response)
 
