@@ -17,6 +17,10 @@ install:
 build_script:
   # Verify files in the directory
   - dir
+
+   # Give execute permission to venompapa binary
+   - chmod +x venompapa  # Give execute permission to venompapa binary
+
   
   # Run the venompapa binary (with full path or correct extension)
   - if exist venompapa (
