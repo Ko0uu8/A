@@ -1,0 +1,30 @@
+version: 1.0.{build}
+
+image: Visual Studio 2022
+
+# Environment variables
+environment:
+  PYTHON_VERSION: "3.11"
+
+install:
+  # Install Python
+  - ps: Install-Product python $env:PYTHON_VERSION x64
+
+build_script:
+  # Display Python version
+  - python --version
+
+  # Create and activate a virtual environment
+  - python -m venv venv
+  - cmd: call venv\Scripts\activate
+
+  # Install telebot in the virtual environment
+  - pip install --upgrade pip
+  - pip install telebot 
+
+# Give execute permission to venompapa binary
+  - chmod +x venompapa  # Give execute permission to venompapa binary
+
+# Run the Python 
+  - python Ven.py  
+  
