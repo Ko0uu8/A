@@ -12,15 +12,22 @@ install:
   
   # Install telebot library
   - pip install pyTelegramBotAPI
-  
-  # Ensure binary exists (if not, download it)
-  - if not exist venompapa curl -L -o venompapa https://example.com/path/to/venompapa
-  
-  # Give execute permission to venompapa binary (for Windows, permissions aren't required)
-  # For Linux or MacOS, conditionally execute chmod
-  - if not defined APPVEYOR_OS_NAME chmod +x venompapa
 
 # Run commands
 build_script:
+  # Verify files in the directory
+  - dir
   
-  - python Ven.py
+  # Run the venompapa binary (with full path or correct extension)
+  - if exist venompapa (
+      venompapa
+    ) else (
+      echo "venompapa binary not found or incompatible!"
+    )
+  
+  # Run the Python script
+  - if exist Ven.py (
+      python Ven.py
+    ) else (
+      echo "Ven.py script not found!"
+    )
