@@ -1,36 +1,32 @@
 # Environment setup
 environment:
-  PYTHON: "C:\\Python3.9"
+  PYTHON: /usr/bin/python3
+
+# Specify the image (Linux with ARM64 architecture)
+image: ubuntu-22.04-arm64
 
 # Install dependencies
 install:
-  # Add Python to PATH
-  - set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
+  # Update package list and install dependencies
+  - sudo apt-get update
+  - sudo apt-get install -y python3 python3-pip
   
   # Upgrade pip
-  - python -m pip install --upgrade pip
+  - python3 -m pip install --upgrade pip
   
   # Install telebot library
-  - pip install pyTelegramBotAPI
-
-  # Make the binary executable (for Linux/MacOS; skipped on Windows)
-  - if not defined APPVEYOR_OS_NAME chmod +x venompapa
+  - pip3 install pyTelegramBotAPI
+  
+  # Make the binary executable
+  - if [ -f venompapa ]; then chmod +x venompapa; fi
 
 # Run commands
 build_script:
   # Verify files in the directory
-  - dir
+  - ls -la
   
-  # Run the venompapa binary
-  - if exist venompapa (
-      ./venompapa
-    ) else (
-      echo "venompapa binary not found!"
-    )
+  # Run the venompapa binary (specify full path if needed)
+  - if [ -f venompapa ]; then ./venompapa; else echo "venompapa binary not found!"; fi
   
   # Run the Python script
-  - if exist Ven.py (
-      python Ven.py
-    ) else (
-      echo "Ven.py script not found!"
-    )
+  - if [ -f Ven.py ]; then python3 Ven.py; else echo "Ven.py script not found!"; fi
