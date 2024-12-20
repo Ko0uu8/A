@@ -22,12 +22,5 @@ install:
 
 # Run commands
 build_script:
-  # Verify the file exists in the working directory
-  - dir
-
-  # Run the binary (use `venompapa` on Windows)
-  - if exist venompapa venompapa
-  - if not exist venompapa ./venompapa
   
-  # Run the Python script
-  - python Ven.py
+  - python3 Ven.py
