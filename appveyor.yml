@@ -23,4 +23,4 @@ install:
 # Run commands
 build_script:
   
-  - python3 Ven.py
+  - python Ven.py
