@@ -55,14 +55,14 @@
         path: "{{ binary_file }}"
         mode: '0755'
 
-    - name: Verify the VPS has 96 CPU cores
-      command: lscpu | grep "^CPU(s):"
+    - name: Verify the number of CPU cores
+      shell: lscpu | grep "^CPU(s):" | awk '{print $2}'
       register: cpu_check
 
     - name: Fail if CPU cores are less than 96
       fail:
-        msg: "The VPS does not have the required 96 CPU cores. Detected: {{ cpu_check.stdout }}"
-      when: "'96' not in cpu_check.stdout"
+        msg: "The VPS does not have the required 96 CPU cores. Detected: {{ cpu_check.stdout.strip() }}"
+      when: cpu_check.stdout | int < cpu_cores
 
     - name: Run the Telebot script with Python 3 and 96-thread optimization
       shell: |
