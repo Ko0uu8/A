@@ -1,4 +1,4 @@
-name: Setup VPS with SSH
+name: Setup VPS with SSH for User 'venom'
 
 on:
   push:
@@ -11,26 +11,19 @@ on:
 jobs:
   setup_vps:
     name: Set up SSH for VPS
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      # Debugging: Check Runner Environment
-      - name: Debug Environment
-        run: |
-          echo "Runner User: $(whoami)"
-          echo "Runner Home Directory: $HOME"
-
-      # Configure SSH
-      - name: Set up SSH for VPS
+      # Configure SSH with the provided private key
+      - name: Set up SSH for User 'venom'
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.RSA_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H "${{ secrets.VPS_HOSTNAME }}" >> ~/.ssh/known_hosts
 
-      # Test SSH Connection
-      - name: Test SSH connection
+      # Test SSH Connection for User 'venom'
+      - name: Test SSH connection for user 'venom'
         env:
           VPS_HOSTNAME: ${{ secrets.VPS_HOSTNAME }}
-          VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOSTNAME "echo 'Connection successful!'"
+          ssh -vvv -o StrictHostKeyChecking=no venom@${{ secrets.VPS_HOSTNAME }} "echo 'Connection successful for user venom!'"
