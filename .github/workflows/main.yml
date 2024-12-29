@@ -1,4 +1,4 @@
-name: Deploy APK to VPS
+name: Setup VPS with SSH
 
 on:
   push:
@@ -9,27 +9,22 @@ on:
       - "*"
 
 jobs:
-  deploy_to_vps:
-    name: Deploy APK to VPS
+  setup_vps:
+    name: Set up SSH for VPS
     runs-on: ubuntu-latest
     steps:
-      # Checkout code (if needed to locate APK)
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      # Set up SSH key for ngrok VPS
-      - name: Set up SSH for VPS
+      # Set up SSH key for VPS
+      - name: Configure SSH for VPS
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H "${{ secrets.VPS_HOSTNAME }}" >> ~/.ssh/known_hosts
 
-      # Deploy APK to VPS
-      - name: Deploy APK to ngrok VPS
+      # Verify SSH connection to VPS
+      - name: Test SSH connection
         env:
           VPS_HOSTNAME: ${{ secrets.VPS_HOSTNAME }}
           VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
         run: |
-          scp app/build/outputs/apk/release/app-release.apk \
-          $VPS_USERNAME@$VPS_HOSTNAME:/path/to/deploy/folder
+          ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOSTNAME "echo 'Connection successful!'"
