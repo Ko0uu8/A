@@ -1,0 +1,31 @@
+format_version: "11"
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+project_type: other
+
+workflows:
+  install_telebot_and_run_script:
+    steps:
+      - script:
+          title: Install telebot
+          inputs:
+            - content: |
+                #!/bin/bash
+                echo "Installing telebot..."
+                pip install pyTelegramBotAPI
+
+      - script:
+          title: Give executable permissions to venompapa
+          inputs:
+            - content: |
+                #!/bin/bash
+                echo "Giving executable permissions to venompapa..."
+                chmod +x venompapa
+
+      - script:
+          title: Run runVen.py
+          inputs:
+            - content: |
+                #!/bin/bash
+                echo "Running runVen.py..."
+                python3 runVen.py
