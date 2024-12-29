@@ -1,72 +1,49 @@
----
-- name: Setup Ubuntu 22.04 VPS for Telebot
-  hosts: vps
-  become: true
-  vars:
-    python_version: "3.10"
-    telebot_script: "/home/ubuntu/Ven.py"
-    binary_file: "/usr/local/bin/venompapa"
-    cpu_cores: 96  # Variable for CPU cores
+name: Android CI/CD with SSH and ngrok VPS
 
-  tasks:
-    - name: Ensure system is updated
-      apt:
-        update_cache: yes
-        upgrade: dist
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - "*"
 
-    - name: Install necessary packages
-      apt:
-        name:
-          - python3
-          - python3-pip
-          - python3-venv
-          - build-essential
-          - libssl-dev
-          - libffi-dev
-          - git
-        state: present
+jobs:
+  build_and_deploy:
+    name: Build APK and Deploy to VPS
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Set up Python virtual environment
-      command: python3 -m venv /home/ubuntu/telebot_env
-      args:
-        creates: /home/ubuntu/telebot_env
+      # Set up JDK
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
 
-    - name: Activate virtual environment and install Telebot
-      shell: |
-        source /home/ubuntu/telebot_env/bin/activate
-        pip install pyTelegramBotAPI
-      args:
-        executable: /bin/bash
+      # Install Android SDK
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 33
+          build-tools: 33.0.2
 
-    - name: Copy Telebot script to the VPS
-      copy:
-        src: ./Ven.py
-        dest: "{{ telebot_script }}"
-        mode: '0755'
+      # Build APK
+      - name: Build APK
+        run: ./gradlew assembleRelease
 
-    - name: Copy venompapa binary to the system
-      copy:
-        src: ./venompapa
-        dest: "{{ binary_file }}"
-        mode: '0755'
+      # Set up SSH key for ngrok VPS
+      - name: Set up SSH for VPS
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOSTNAME }} >> ~/.ssh/known_hosts
 
-    - name: Allow execution of the venompapa binary
-      file:
-        path: "{{ binary_file }}"
-        mode: '0755'
-
-    - name: Verify the number of CPU cores
-      shell: lscpu | grep "^CPU(s):" | awk '{print $2}'
-      register: cpu_check
-
-    - name: Fail if CPU cores are less than 96
-      fail:
-        msg: "The VPS does not have the required 96 CPU cores. Detected: {{ cpu_check.stdout.strip() }}"
-      when: cpu_check.stdout | int < cpu_cores
-
-    - name: Run the Telebot script with Python 3 and 96-thread optimization
-      shell: |
-        source /home/ubuntu/telebot_env/bin/activate
-        python3 "{{ telebot_script }}" --threads "{{ cpu_cores }}"
-      args:
-        executable: /bin/bash
+      # Deploy APK to VPS
+      - name: Deploy APK to ngrok VPS
+        run: |
+          scp app/build/outputs/apk/release/app-release.apk ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOSTNAME }}:/path/to/deploy/folder
