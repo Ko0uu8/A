@@ -1,4 +1,4 @@
-name: Android CI/CD with SSH and ngrok VPS
+name: Deploy APK to VPS
 
 on:
   push:
@@ -9,37 +9,13 @@ on:
       - "*"
 
 jobs:
-  build_and_deploy:
-    name: Build APK and Deploy to VPS
+  deploy_to_vps:
+    name: Deploy APK to VPS
     runs-on: ubuntu-latest
     steps:
-      # Checkout code
+      # Checkout code (if needed to locate APK)
       - name: Checkout Code
         uses: actions/checkout@v3
-
-      # Set up JDK
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-
-      # Install Android SDK
-      - name: Install Android SDK
-        uses: android-actions/setup-android@v2
-        with:
-          api-level: 33
-          build-tools: 33.0.3
-
-      # Accept licenses and install additional SDK packages
-      - name: Accept Licenses and Install SDK Packages
-        run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platforms;android-33" "build-tools;33.0.3"
-
-      # Build APK
-      - name: Build APK
-        run: ./gradlew assembleRelease
 
       # Set up SSH key for ngrok VPS
       - name: Set up SSH for VPS
