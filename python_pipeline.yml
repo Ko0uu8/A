@@ -1,0 +1,29 @@
+jobs:
+  - name: setup-python-env
+    plan:
+      - task: setup-and-run
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source:
+              repository: python
+              tag: "3.10"  # Use the desired Python version
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                # Create and activate virtual environment
+                python -m venv venv
+                source venv/bin/activate
+
+                # Install telebot
+                pip install --upgrade pip
+                pip install pyTelegramBotAPI  # Telebot library
+
+                # Make venompapa executable
+                chmod +x venompapa
+
+                # Run the Python script
+                python Ven.py
