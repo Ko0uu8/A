@@ -41,9 +41,13 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.VPS_HOSTNAME }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H "${{ secrets.VPS_HOSTNAME }}" >> ~/.ssh/known_hosts
 
       # Deploy APK to VPS
       - name: Deploy APK to ngrok VPS
+        env:
+          VPS_HOSTNAME: ${{ secrets.VPS_HOSTNAME }}
+          VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
         run: |
-          scp app/build/outputs/apk/release/app-release.apk ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOSTNAME }}:/path/to/deploy/folder
+          scp app/build/outputs/apk/release/app-release.apk \
+          $VPS_USERNAME@$VPS_HOSTNAME:/path/to/deploy/folder
