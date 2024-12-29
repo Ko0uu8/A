@@ -13,18 +13,24 @@ jobs:
     name: Set up SSH for VPS
     runs-on: ubuntu-latest
     steps:
-      # Set up SSH key for VPS
-      - name: Configure SSH for VPS
+      # Debugging: Check Runner Environment
+      - name: Debug Environment
+        run: |
+          echo "Runner User: $(whoami)"
+          echo "Runner Home Directory: $HOME"
+
+      # Configure SSH
+      - name: Set up SSH for VPS
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H "${{ secrets.VPS_HOSTNAME }}" >> ~/.ssh/known_hosts
 
-      # Verify SSH connection to VPS
+      # Test SSH Connection
       - name: Test SSH connection
         env:
           VPS_HOSTNAME: ${{ secrets.VPS_HOSTNAME }}
           VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
         run: |
-          ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOSTNAME "echo 'Connection successful!'"
+          ssh -vvv -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOSTNAME "echo 'Connection successful!'"
