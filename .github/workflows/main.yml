@@ -29,7 +29,13 @@ jobs:
         uses: android-actions/setup-android@v2
         with:
           api-level: 33
-          build-tools: 33.0.2
+          build-tools: 33.0.3
+
+      # Accept licenses and install additional SDK packages
+      - name: Accept Licenses and Install SDK Packages
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "platforms;android-33" "build-tools;33.0.3"
 
       # Build APK
       - name: Build APK
