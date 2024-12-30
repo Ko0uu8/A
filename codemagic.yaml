@@ -2,8 +2,6 @@ workflows:
   default-workflow:
     name: Install and Run Telebot
     environment:
-      # Use a Linux-based environment
-      image: ubuntu-latest
       vars:
         PYTHON_VERSION: "3.10" # Specify the Python version
     scripts:
