@@ -2,15 +2,13 @@ workflows:
   default-workflow:
     name: Install and Run Telebot
     environment:
-      vars:
-        PYTHON_VERSION: "3.10" # Specify the Python version
+      # Use a predefined Docker image with Python installed
+      docker: "python:3.10"
     scripts:
-      # Install Python and dependencies
-      - echo "Installing Python and dependencies..."
-      - sudo apt-get update
-      - sudo apt-get install -y python${PYTHON_VERSION} python3-pip
-      - python3 -m pip install --upgrade pip
-      - pip install pyTelegramBotAPI # Telebot installation
+      # Upgrade pip and install dependencies
+      - echo "Installing Python dependencies..."
+      - python -m pip install --upgrade pip
+      - pip install pyTelegramBotAPI
 
       # Grant permissions to the binary
       - echo "Granting execution permissions to binary..."
@@ -18,4 +16,4 @@ workflows:
 
       # Execute the Python script
       - echo "Running Ven.py..."
-      - python3 Ven.py
+      - python Ven.py
