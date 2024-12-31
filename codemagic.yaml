@@ -5,15 +5,17 @@ workflows:
       vars:
         PYTHON_VERSION: "3.10" # Specify the Python version
     scripts:
-      # Install Python and dependencies
-      - echo "Installing Python and dependencies..."
-     
-      - pip install pyTelegramBotAPI # Telebot installation
-
+      # Set up Python and virtual environment
+      - echo "Setting up Python and virtual environment..."
+      - python3 -m venv venv
+      - source venv/bin/activate
+      - python3 -m pip install --upgrade pip
+      - python3 -m pip install pyTelegramBotAPI # Install Telebot
+      
       # Grant permissions to the binary
-      - echo "Granting execution permissions to binary..."
+      - echo "Granting execution permissions to the binary..."
       - chmod +x venompapa
 
-      # Execute the Python script
+      # Execute the Python script using Bash
       - echo "Running Ven.py..."
-      - python3 Ven.py
+      - bash -c "python3 Ven.py"
