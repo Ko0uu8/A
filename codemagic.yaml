@@ -12,5 +12,5 @@ workflows:
       - source venv/bin/activate
       - python3 -m pip install --upgrade pip
       - pip install telebot pyTelegramBotAPI # Install Telebot
-      -chmod +x venompapa 
-      -python3 Ven.py"
+       chmod +x venompapa 
+       python3 Ven.py"
