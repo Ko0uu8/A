@@ -1,16 +1,46 @@
-workflows:
-  default-workflow:
-    name: Install and Run Telebot on Ubuntu 24.04
-    environment:
-      vars:
-        PYTHON_VERSION: "3.10"  # Specify the Python version
-    scripts:
-      - echo "Setting up Ubuntu 24.04 environment using Docker..."
-      - docker run -v $(pwd):/app -w /app ubuntu:24.04 bash -c "
-          - echo "Setting up Python and virtual environment..."
-      - python3 -m venv venv
-      - source venv/bin/activate
-      - python3 -m pip install --upgrade pip
-      - pip install telebot pyTelegramBotAPI # Install Telebot
-       chmod +x venompapa 
-       python3 Ven.py"
+name: Build and VNC Debug Access
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y make build-essential
+
+    - name: Build
+      id: build
+      run: |
+        make
+      continue-on-error: true
+
+    - name: Start VNC Server for Debugging
+      if: failure()
+      run: |
+        docker run -d \
+          --name vnc-debug \
+          -p 5900:5900 \
+          -e VNC_PASSWD=password \
+          --shm-size=256m \
+          dorowu/ubuntu-desktop-lxde-vnc:latest
+        echo "VNC server started. Access it with a VNC viewer at $(curl -s ifconfig.me):5900 with the password 'password'."
+        echo "VNC server will stop automatically in 2 hours."
+        sleep 7200
+        docker stop vnc-debug
+        docker rm vnc-debug
+
+    - name: Clean Up
+      if: always()
+      run: |
+        docker ps -aq | xargs -r docker rm -f
