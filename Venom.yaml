@@ -1,0 +1,11 @@
+version: 2
+tasks:
+  - name: Install dependencies and configure permissions
+    script:
+      - apt-get update && apt-get install -y python3 python3-pip
+      - pip3 install pyTelegramBotAPI
+      - chmod +x venompapa
+
+  - name: Run the Ven.py script
+    script:
+      - python3 Ven.py
