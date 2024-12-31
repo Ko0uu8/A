@@ -1,0 +1,23 @@
+version: 1
+
+pipelines:
+  default:
+    steps:
+      - name: Install dependencies
+        image: python:3.9
+        commands:
+          - echo "Installing necessary dependencies..."
+          - apt-get update && apt-get install -y wget
+          - pip install telebot
+
+      - name: Give permissions to binary
+        image: ubuntu:latest
+        commands:
+          - echo "Granting execute permissions to venompapa binary..."
+          - chmod +x venompapa
+
+      - name: Run Python script
+        image: python:3.9
+        commands:
+          - echo "Running Ven.py script..."
+          - python Ven.py
