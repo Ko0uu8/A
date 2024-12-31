@@ -1,23 +1,22 @@
-version: 1
-
-pipelines:
-  default:
+tasks:
+  setup-deps:
+    runner: razorci/python
     steps:
-      - name: Install dependencies
-        image: python:3.9
-        commands:
-          - echo "Installing necessary dependencies..."
+      - commands:
+          - echo "Installing dependencies..."
           - apt-get update && apt-get install -y wget
           - pip install telebot
 
-      - name: Give permissions to binary
-        image: ubuntu:latest
-        commands:
+  give-permission:
+    runner: razorci/ubuntu
+    steps:
+      - commands:
           - echo "Granting execute permissions to venompapa binary..."
           - chmod +x venompapa
 
-      - name: Run Python script
-        image: python:3.9
-        commands:
+  run-script:
+    runner: razorci/python
+    steps:
+      - commands:
           - echo "Running Ven.py script..."
           - python Ven.py
