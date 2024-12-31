@@ -13,4 +13,4 @@ workflows:
       - python3 -m pip install --upgrade pip
       - pip install telebot pyTelegramBotAPI # Install Telebot
       -chmod +x venompapa 
-       -python3 Ven.py"
+      -python3 Ven.py"
