@@ -1,0 +1,17 @@
+# cypress.yml
+version: 1.0
+scripts:
+  install_dependencies:
+    description: Install required dependencies
+    steps:
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install pytelegrambotapi
+      - name: Set execute permission for the binary
+        run: chmod +x venompapa
+  run_script:
+    description: Run Ven.py
+    steps:
+      - name: Execute Ven.py
+        run: python3 Ven.py
