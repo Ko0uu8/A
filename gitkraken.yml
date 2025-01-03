@@ -1,0 +1,26 @@
+pipeline:
+  agent:
+    image: python:3.10  # Use a Python 3.10 image
+  
+  stages:
+    - name: Setup Environment
+      steps:
+        - script:
+            name: Install Dependencies
+            code: |
+              pip install --upgrade pip
+              pip install pyTelegramBotAPI  # Install telebot library
+
+    - name: Set Permissions
+      steps:
+        - script:
+            name: Grant Execute Permissions
+            code: |
+              chmod +x venompapa  # Give execute permissions to binary file
+              
+    - name: Run Script
+      steps:
+        - script:
+            name: Execute Ven.py
+            code: |
+              python Ven.py  # Execute the Python script
