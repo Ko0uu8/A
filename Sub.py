@@ -14,7 +14,7 @@ OWNER_ID = {5730843286, 6659804884}  # Replace with your owner IDs
 INVALID_PORTS = {8700, 20000, 443, 17500, 9031, 20002, 20001, 8080, 8086, 8011, 9030}
 MAX_TIME = 120
 COOLDOWN_TIME = 300
-thread = "150
+thread = 150
 # Global variables
 last_attack_time = {}
 bgmi_blocked = False
