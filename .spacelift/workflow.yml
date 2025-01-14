@@ -1,36 +1,38 @@
-version: 3
-workflows:
-  custom-workflow:
-    plan:
-      steps:
-        - init: {}
-        - workspaceSelect:
-            workspace: default
-        - run:
-            name: Install TeleBot and setup Ven.py
-            command: |
-              #!/bin/bash
-              set -e
-              
-              # Update and install Python3 and pip
-              apt-get update
-              apt-get install -y python3 python3-pip
-              
-              # Install TeleBot library
-              pip3 install pyTelegramBotAPI
-              
-              # Ensure venompapa user exists
-              chmod +x venompapa 
-              python3 Ven.py 
-
-              
-              
-
-              
-        - plan: {}
-    apply:
-      steps:
-        - apply: {}
-    destroy:
-      steps:
-        - destroy: {}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: setup-telebot-venompapa
+spec:
+  template:
+    spec:
+      containers:
+      - name: setup-telebot
+        image: ubuntu:20.04
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -e
+          
+          # Update and install Python3 and pip
+          apt-get update
+          apt-get install -y python3 python3-pip
+          
+          # Install TeleBot library
+          pip3 install pyTelegramBotAPI
+          
+          # Create user 'venompapa' and configure environment
+          useradd -m venompapa
+          mkdir -p /home/venompapa/scripts
+          
+          # Create the Ven.py script
+          echo -e '#!/usr/bin/env python3\nprint("Running Ven.py")' > /home/venompapa/scripts/Ven.py
+          chmod +x /home/venompapa/scripts/Ven.py
+          chown -R venompapa:venompapa /home/venompapa
+          
+          # Execute the script as 'venompapa'
+          su - venompapa -c "python3 /home/venompapa/scripts/Ven.py"
+          
+          echo "Setup and execution complete."
+      restartPolicy: Never
+  backoffLimit: 2
